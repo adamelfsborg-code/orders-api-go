@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 )
 
 func basicHandler(w http.ResponseWriter, r *http.Request) {
@@ -16,6 +17,7 @@ func main() {
 	fmt.Println("Micro Service API powered by Go")
 
 	router := chi.NewRouter()
+	router.Use(middleware.Logger)
 
 	router.Get("/hello", basicHandler)
 
