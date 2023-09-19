@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+
+	"github.com/go-chi/chi/v5"
 )
 
 func basicHandler(w http.ResponseWriter, r *http.Request) {
@@ -13,9 +15,13 @@ func basicHandler(w http.ResponseWriter, r *http.Request) {
 func main() {
 	fmt.Println("Micro Service API powered by Go")
 
+	router := chi.NewRouter()
+
+	router.Get("/hello", basicHandler)
+
 	server := &http.Server{
 		Addr:    ":3000",
-		Handler: http.HandlerFunc(basicHandler),
+		Handler: router,
 	}
 
 	err := server.ListenAndServe()
