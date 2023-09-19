@@ -1,34 +1,18 @@
 package main
 
 import (
+	"context"
 	"fmt"
-	"log"
-	"net/http"
 
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
+	"github.com/adamelfsborg-code/orders-api-go/application"
 )
 
-func basicHandler(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Hello World"))
-}
-
 func main() {
-	fmt.Println("Micro Service API powered by Go")
+	app := application.New()
 
-	router := chi.NewRouter()
-	router.Use(middleware.Logger)
-
-	router.Get("/hello", basicHandler)
-
-	server := &http.Server{
-		Addr:    ":3000",
-		Handler: router,
-	}
-
-	err := server.ListenAndServe()
+	err := app.Start(context.TODO())
 
 	if err != nil {
-		log.Fatal("Failed to serve Server due to: ", err, "\n")
+		fmt.Println("Failed to start app: ", err)
 	}
 }
