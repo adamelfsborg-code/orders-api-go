@@ -73,8 +73,8 @@ func (o *Order) List(w http.ResponseWriter, r *http.Request) {
 
 	const size = 50
 	res, err := o.Repo.FindAll(r.Context(), order.FindAllPage{
-		Offsett: cursor,
-		Size:    size,
+		Offset: cursor,
+		Size:   size,
 	})
 	if err != nil {
 		fmt.Println("Failed to find all: ", err)
