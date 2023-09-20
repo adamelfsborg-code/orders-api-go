@@ -117,7 +117,7 @@ func (r *RedisRepo) UpdateByID(ctx context.Context, order model.Order) error {
 	return nil
 }
 
-type FIndAllPage struct {
+type FindAllPage struct {
 	Size    uint64
 	Offsett uint64
 }
@@ -127,7 +127,7 @@ type FindResult struct {
 	Cursor uint64
 }
 
-func (r *RedisRepo) FindAll(ctx context.Context, page FIndAllPage) (FindResult, error) {
+func (r *RedisRepo) FindAll(ctx context.Context, page FindAllPage) (FindResult, error) {
 	res := r.Client.SScan(ctx, "orders", page.Offsett, "*", int64(page.Size))
 
 	keys, cursor, err := res.Result()
