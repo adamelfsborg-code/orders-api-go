@@ -26,7 +26,6 @@ func New(config Config) *App {
 
 	switch config.RepoAdapter {
 	case "PSQL":
-		// Initialize the PostgreSQL database connection
 		pgConn := pg.Connect(&pg.Options{
 			Addr:     config.PostgresAddr,
 			User:     config.PostgresUser,
@@ -39,7 +38,7 @@ func New(config Config) *App {
 		}
 	case "REDIS":
 		redisConn := redis.NewClient(&redis.Options{
-			Addr: config.RedisAddress,
+			Addr: config.RedisAddr,
 		})
 
 		repo = &order.RedisRepo{

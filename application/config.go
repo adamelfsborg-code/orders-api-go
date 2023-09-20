@@ -1,13 +1,16 @@
 package application
 
 import (
+	"fmt"
 	"os"
 	"strconv"
+
+	"github.com/joho/godotenv"
 )
 
 type Config struct {
 	ServerPort       uint16
-	RedisAddress     string
+	RedisAddr        string
 	PostgresAddr     string
 	PostgresUser     string
 	PostgresPassword string
@@ -16,20 +19,13 @@ type Config struct {
 }
 
 func LoadConfig() Config {
-	cfg := Config{
-		ServerPort:       3000,
-		RedisAddress:     "localhost:6379",
-		PostgresAddr:     "localhost:5432",
-		PostgresUser:     "admin",
-		PostgresPassword: "123",
-		PostgresDatabase: "sudokus",
-		RepoAdapter:      "PSQL",
+	err := godotenv.Load(".env")
+
+	if err != nil {
+		fmt.Printf("Failed to start server: %v", err)
 	}
 
-	redisAddr, exists := os.LookupEnv("REDIS_ADDR")
-	if exists {
-		cfg.RedisAddress = redisAddr
-	}
+	cfg := Config{}
 
 	serverPort, exists := os.LookupEnv("SERVER_PORT")
 	if exists {
@@ -40,5 +36,36 @@ func LoadConfig() Config {
 			cfg.ServerPort = uint16(port)
 		}
 	}
+
+	redisAddr, exists := os.LookupEnv("REDIS_ADDR")
+	if exists {
+		cfg.RedisAddr = redisAddr
+	}
+
+	postgresAddr, exists := os.LookupEnv("POSTGRES_ADDR")
+	if exists {
+		cfg.PostgresAddr = postgresAddr
+	}
+
+	postgresUser, exists := os.LookupEnv("POSTGRES_USER")
+	if exists {
+		cfg.PostgresUser = postgresUser
+	}
+
+	postgresDatabase, exists := os.LookupEnv("POSTGRES_DATABASE")
+	if exists {
+		cfg.PostgresDatabase = postgresDatabase
+	}
+
+	postgresPassword, exists := os.LookupEnv("POSTGRES_PASSWORD")
+	if exists {
+		cfg.PostgresPassword = postgresPassword
+	}
+
+	repoAdapter, exists := os.LookupEnv("REPO_ADAPTER")
+	if exists {
+		cfg.RepoAdapter = repoAdapter
+	}
+
 	return cfg
 }
