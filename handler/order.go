@@ -54,8 +54,8 @@ func (o *Order) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Write(res)
 	w.WriteHeader(http.StatusCreated)
+	w.Write(res)
 }
 
 func (o *Order) List(w http.ResponseWriter, r *http.Request) {
