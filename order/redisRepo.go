@@ -17,7 +17,15 @@ func orderIDKey(id uint64) string {
 	return fmt.Sprintf("order:%d", id)
 }
 
-func (r *RedisRepo) Insert(ctx context.Context, order OrderModel) error {
+func (r *RedisRepo) Ping(ctx context.Context) error {
+	return r.Client.Ping(ctx).Err()
+}
+
+func (r *RedisRepo) Close(ctx context.Context) error {
+	return r.Client.Close()
+}
+
+func (r *RedisRepo) Create(ctx context.Context, order OrderModel) error {
 	data, err := json.Marshal(order)
 	if err != nil {
 		return fmt.Errorf("Failed to encode order: %w", err)
@@ -115,17 +123,7 @@ func (r *RedisRepo) UpdateByID(ctx context.Context, order OrderModel) error {
 	return nil
 }
 
-type FindAllPage struct {
-	Size   uint64
-	Offset uint64
-}
-
-type FindResult struct {
-	Orders []OrderModel
-	Cursor uint64
-}
-
-func (r *RedisRepo) FindAll(ctx context.Context, page FindAllPage) (FindResult, error) {
+func (r *RedisRepo) List(ctx context.Context, page FindAllPage) (FindResult, error) {
 	res := r.Client.SScan(ctx, "orders", page.Offset, "*", int64(page.Size))
 
 	keys, cursor, err := res.Result()

@@ -1,6 +1,7 @@
 package order
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -13,8 +14,28 @@ import (
 	"github.com/google/uuid"
 )
 
+type Repo interface {
+	Ping(ctx context.Context) error
+	Close(ctx context.Context) error
+	Create(ctx context.Context, order OrderModel) error
+	List(ctx context.Context, page FindAllPage) (FindResult, error)
+	FindByID(ctx context.Context, id uint64) (OrderModel, error)
+	UpdateByID(ctx context.Context, order OrderModel) error
+	DeleteByID(ctx context.Context, id uint64) error
+}
+
 type OrderHandler struct {
-	Repo *RedisRepo
+	Repo Repo
+}
+
+type FindAllPage struct {
+	Size   uint64
+	Offset uint64
+}
+
+type FindResult struct {
+	Orders []OrderModel
+	Cursor uint64
 }
 
 func (o *OrderHandler) Create(w http.ResponseWriter, r *http.Request) {
@@ -38,7 +59,7 @@ func (o *OrderHandler) Create(w http.ResponseWriter, r *http.Request) {
 		CreatedAt:  &now,
 	}
 
-	err = o.Repo.Insert(r.Context(), order)
+	err = o.Repo.Create(r.Context(), order)
 	if err != nil {
 		fmt.Println("Failed to Insert: ", err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -72,7 +93,7 @@ func (o *OrderHandler) List(w http.ResponseWriter, r *http.Request) {
 	}
 
 	const size = 50
-	res, err := o.Repo.FindAll(r.Context(), FindAllPage{
+	res, err := o.Repo.List(r.Context(), FindAllPage{
 		Offset: cursor,
 		Size:   size,
 	})

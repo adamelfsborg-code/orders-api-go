@@ -24,9 +24,7 @@ func (a *App) loadRoutes() {
 
 func (a *App) loadOrderRoutes(router chi.Router) {
 	orderHandler := &order.OrderHandler{
-		Repo: &order.RedisRepo{
-			Client: a.rdb,
-		},
+		Repo: a.database,
 	}
 
 	router.Get("/", orderHandler.List)

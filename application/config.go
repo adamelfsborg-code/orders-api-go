@@ -6,14 +6,24 @@ import (
 )
 
 type Config struct {
-	ServerPort   uint16
-	RedisAddress string
+	ServerPort       uint16
+	RedisAddress     string
+	PostgresAddr     string
+	PostgresUser     string
+	PostgresPassword string
+	PostgresDatabase string
+	RepoAdapter      string
 }
 
 func LoadConfig() Config {
 	cfg := Config{
-		RedisAddress: "localhost:6379",
-		ServerPort:   3000,
+		ServerPort:       3000,
+		RedisAddress:     "localhost:6379",
+		PostgresAddr:     "localhost:5432",
+		PostgresUser:     "admin",
+		PostgresPassword: "123",
+		PostgresDatabase: "sudokus",
+		RepoAdapter:      "PSQL",
 	}
 
 	redisAddr, exists := os.LookupEnv("REDIS_ADDR")

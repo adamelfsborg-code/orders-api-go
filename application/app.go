@@ -6,22 +6,48 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/adamelfsborg-code/orders-api-go/order"
+	"github.com/go-pg/pg/v10"
 	"github.com/redis/go-redis/v9"
 )
 
 type App struct {
-	router http.Handler
-	rdb    *redis.Client
-	config Config
+	router   http.Handler
+	database order.Repo
+	config   Config
 }
 
 func New(config Config) *App {
 	app := &App{
-		rdb: redis.NewClient(&redis.Options{
-			Addr: config.RedisAddress,
-		}),
 		config: config,
 	}
+
+	var repo order.Repo
+
+	switch config.RepoAdapter {
+	case "PSQL":
+		// Initialize the PostgreSQL database connection
+		pgConn := pg.Connect(&pg.Options{
+			Addr:     config.PostgresAddr,
+			User:     config.PostgresUser,
+			Password: config.PostgresPassword,
+			Database: config.PostgresDatabase,
+		})
+
+		repo = &order.PostgresRepo{
+			Client: pgConn,
+		}
+	case "REDIS":
+		redisConn := redis.NewClient(&redis.Options{
+			Addr: config.RedisAddress,
+		})
+
+		repo = &order.RedisRepo{
+			Client: redisConn,
+		}
+	}
+
+	app.database = repo
 
 	app.loadRoutes()
 
@@ -34,18 +60,18 @@ func (a *App) Start(ctx context.Context) error {
 		Handler: a.router,
 	}
 
-	err := a.rdb.Ping(ctx).Err()
+	err := a.database.Ping(ctx)
 	if err != nil {
-		return fmt.Errorf("Failed to connect to redis: %w", err)
+		return fmt.Errorf("Failed to connect to repo: %w", err)
 	}
-
 	defer func() {
-		if err := a.rdb.Close(); err != nil {
-			fmt.Println("Failed to close redis", err)
+		err := a.database.Close(ctx)
+		if err != nil {
+			fmt.Println("Failed to close Repo", err)
 		}
 	}()
 
-	fmt.Println("Starting Server!")
+	fmt.Printf("Starting Server! Connected to Repo: %q", a.config.RepoAdapter)
 
 	ch := make(chan error, 1)
 
