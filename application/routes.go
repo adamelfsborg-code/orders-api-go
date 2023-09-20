@@ -3,8 +3,7 @@ package application
 import (
 	"net/http"
 
-	"github.com/adamelfsborg-code/orders-api-go/handler"
-	"github.com/adamelfsborg-code/orders-api-go/repository/order"
+	"github.com/adamelfsborg-code/orders-api-go/order"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 )
@@ -24,7 +23,7 @@ func (a *App) loadRoutes() {
 }
 
 func (a *App) loadOrderRoutes(router chi.Router) {
-	orderHandler := &handler.Order{
+	orderHandler := &order.OrderHandler{
 		Repo: &order.RedisRepo{
 			Client: a.rdb,
 		},
