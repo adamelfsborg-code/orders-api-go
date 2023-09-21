@@ -12,18 +12,18 @@ type PostgresRepo struct {
 }
 
 func (p *PostgresRepo) Ping(ctx context.Context) error {
-	err := p.Client.Ping(ctx)
+	return p.Client.Ping(ctx)
+}
+
+func (p *PostgresRepo) Close() error {
+	return p.Client.Close()
+}
+
+func (p *PostgresRepo) Create(ctx context.Context, order Order) error {
+	_, err := p.Client.Model(&order).Insert()
 	if err != nil {
-		return fmt.Errorf("Failed to connect to postgres: %w", err)
+		return fmt.Errorf("Failed to create order: %w", err)
 	}
-	return nil
-}
-
-func (p *PostgresRepo) Close(ctx context.Context) error {
-	return nil
-}
-
-func (p *PostgresRepo) Create(ctx context.Context, order OrderModel) error {
 	return nil
 }
 
@@ -31,11 +31,11 @@ func (p *PostgresRepo) List(ctx context.Context, page FindAllPage) (FindResult, 
 	return FindResult{}, nil
 }
 
-func (p *PostgresRepo) FindByID(ctx context.Context, id uint64) (OrderModel, error) {
-	return OrderModel{}, nil
+func (p *PostgresRepo) FindByID(ctx context.Context, id uint64) (Order, error) {
+	return Order{}, nil
 }
 
-func (p *PostgresRepo) UpdateByID(ctx context.Context, order OrderModel) error {
+func (p *PostgresRepo) UpdateByID(ctx context.Context, order Order) error {
 	return nil
 }
 

@@ -33,6 +33,13 @@ func New(config Config) *App {
 			Database: config.PostgresDatabase,
 		})
 
+		_, err := pgConn.Exec("SET search_path TO go_orders")
+
+		if err != nil {
+			fmt.Println("Failed to set search path: %w", err)
+			return nil
+		}
+
 		repo = &order.PostgresRepo{
 			Client: pgConn,
 		}
@@ -64,13 +71,13 @@ func (a *App) Start(ctx context.Context) error {
 		return fmt.Errorf("Failed to connect to repo: %w", err)
 	}
 	defer func() {
-		err := a.database.Close(ctx)
+		err := a.database.Close()
 		if err != nil {
 			fmt.Println("Failed to close Repo", err)
 		}
 	}()
 
-	fmt.Printf("Starting Server! Connected to Repo: %q", a.config.RepoAdapter)
+	fmt.Printf("Starting Server! Connected to Repo: %q \n", a.config.RepoAdapter)
 
 	ch := make(chan error, 1)
 
