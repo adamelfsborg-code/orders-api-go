@@ -62,6 +62,12 @@ func (p *PostgresRepo) FindByID(ctx context.Context, id uint64) (Order, error) {
 }
 
 func (p *PostgresRepo) UpdateByID(ctx context.Context, order Order) error {
+	_, err := p.Client.Model(&order).
+		Where("order_id = ?", order.OrderID).
+		Update()
+	if err != nil {
+		return fmt.Errorf("Failed to get order: %w", err)
+	}
 	return nil
 }
 
