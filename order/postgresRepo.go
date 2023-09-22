@@ -44,7 +44,12 @@ func (p *PostgresRepo) List(ctx context.Context, page FindAllPage) (FindResult, 
 }
 
 func (p *PostgresRepo) FindByID(ctx context.Context, id uint64) (Order, error) {
-	return Order{}, nil
+	var order Order
+	err := p.Client.Model(&order).Where("order_id = ?", id).Limit(1).Select()
+	if err != nil {
+		return Order{}, fmt.Errorf("Failed to get order: %w", err)
+	}
+	return order, nil
 }
 
 func (p *PostgresRepo) UpdateByID(ctx context.Context, order Order) error {
