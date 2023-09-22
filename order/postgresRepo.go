@@ -2,7 +2,9 @@ package order
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"math"
 
 	"github.com/go-pg/pg/v10"
 )
@@ -44,9 +46,16 @@ func (p *PostgresRepo) List(ctx context.Context, page FindAllPage) (FindResult, 
 }
 
 func (p *PostgresRepo) FindByID(ctx context.Context, id uint64) (Order, error) {
+	if id > math.MaxUint64 {
+		return Order{}, fmt.Errorf("ID value out of range")
+	}
+
 	var order Order
 	err := p.Client.Model(&order).Where("order_id = ?", id).Limit(1).Select()
-	if err != nil {
+
+	if errors.Is(err, pg.ErrNoRows) {
+		return Order{}, ErrNotExists
+	} else if err != nil {
 		return Order{}, fmt.Errorf("Failed to get order: %w", err)
 	}
 	return order, nil
