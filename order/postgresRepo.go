@@ -66,7 +66,7 @@ func (p *PostgresRepo) UpdateByID(ctx context.Context, order Order) error {
 		Where("order_id = ?", order.OrderID).
 		Update()
 	if err != nil {
-		return fmt.Errorf("Failed to get order: %w", err)
+		return fmt.Errorf("Failed to update order: %w", err)
 	}
 	return nil
 }
