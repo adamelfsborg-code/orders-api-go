@@ -72,5 +72,12 @@ func (p *PostgresRepo) UpdateByID(ctx context.Context, order Order) error {
 }
 
 func (p *PostgresRepo) DeleteByID(ctx context.Context, id uint64) error {
+	var order Order
+	_, err := p.Client.Model(&order).
+		Where("order_id = ?", id).
+		Delete()
+	if err != nil {
+		return fmt.Errorf("Failed to delete order: %w", err)
+	}
 	return nil
 }
