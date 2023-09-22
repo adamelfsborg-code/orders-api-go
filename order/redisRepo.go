@@ -55,8 +55,6 @@ func (r *RedisRepo) Create(ctx context.Context, order Order) error {
 	return nil
 }
 
-var ErrNotExists = errors.New("Order does not exist")
-
 func (r *RedisRepo) FindByID(ctx context.Context, id uint64) (Order, error) {
 	key := orderIDKey(id)
 
