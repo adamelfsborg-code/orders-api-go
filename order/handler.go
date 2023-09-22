@@ -38,6 +38,8 @@ type FindResult struct {
 	Cursor uint64
 }
 
+var ErrNotExists = errors.New("Order does not exist")
+
 func (o *OrderHandler) Create(w http.ResponseWriter, r *http.Request) {
 	var body struct {
 		CustomerID uuid.UUID  `json:"customer_id"`
