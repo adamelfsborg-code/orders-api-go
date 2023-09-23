@@ -1,6 +1,6 @@
 import requests
 import sys
-from utils.log import Log, LogEx
+from utils.log import LogEx
 
 try:
     order_id = sys.argv[1]
