@@ -22,13 +22,20 @@ if order_id:
         json = r.json()
         Log(format_json(json), custom_status_text=r.status_code, code=r.status_code)
     except Exception as err:
+        if r.status_code == 404:
+            LogEx(
+                f"[Error]: No Order with ID {order_id}", 
+                custom_status_text=r.status_code,
+                code=1
+            )
         LogEx(
             f"[Error]: {err}", 
+            custom_status_text=r.status_code,
             code=1
         )
 else:
     LogEx(
-        f"[ValueError]: {err}", 
         "[Usage]: python script.py <integer_value: Order Id>", 
-        code=1
+        code=1,
+        custom_status_text="Wrong params passed"
     )
