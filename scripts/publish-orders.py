@@ -45,4 +45,4 @@ for i in range(orders_to_create):
     # If your port is different, change this URL
     r = requests.post("http://localhost:3000/orders", json=order)
     r.status_code
-    print("posted order", i + 1)
+    LogEx(f"[Response Code]: {r.status_code}", exit_code=0)
