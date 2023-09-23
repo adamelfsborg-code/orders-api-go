@@ -1,6 +1,7 @@
 import requests
 import sys
-from utils.log import Log, LogEx, LogJson
+from utils.log import Log, LogEx
+from utils.json import format_json
 
 
 try:
@@ -19,7 +20,7 @@ url = f"http://localhost:3000/orders{f'?page={page}' if page else '/'}"
 r = requests.get(url=url)
 try:
     json = r.json()
-    LogJson(json)
+    Log(format_json(json), custom_status_text=r.status_code, code=r.status_code)
 except Exception as err:
     LogEx(
         f"[Error]: {err}", 

@@ -1,9 +1,6 @@
 import datetime
-import json
 import sys
 from .codes import code_to_color, code_to_status
-from pygments import highlight, lexers, formatters
-
 
 def Log(*data: str, code: int, custom_status_text=None):
     current_datetime = datetime.datetime.now()
@@ -27,13 +24,3 @@ def LogEx(*data: str, code: int):
     code = 500 if code == 1 else code
     Log(*data, code=code)
     sys.exit(code)
-
-
-def LogJson(data: object, code=0):
-    formatted_data = json.dumps(data, indent=4)
-    colorized_json = highlight(
-        formatted_data, 
-        lexers.JsonLexer(), 
-        formatters.TerminalFormatter()
-    )
-    Log(colorized_json, code=code)
