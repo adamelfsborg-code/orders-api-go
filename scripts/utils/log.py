@@ -20,7 +20,7 @@ def Log(*data: str, code: int, custom_status_text=None):
     )
     print(colored_divider)
 
-def LogEx(*data: str, code: int):
+def LogEx(*data: str, custom_status_text = None, code: int):
     code = 500 if code == 1 else code
-    Log(*data, code=code)
+    Log(*data, custom_status_text=custom_status_text, code=code)
     sys.exit(code)
