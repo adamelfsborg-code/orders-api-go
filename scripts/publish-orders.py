@@ -44,4 +44,4 @@ for i in range(orders_to_create):
 
     r = requests.post("http://localhost:3000/orders", json=order)
     r.status_code
-    Log(f"[Response Code]: {r.status_code}", code=r.status_code)
+    Log(f"[Code]: {r.status_code}", code=r.status_code)

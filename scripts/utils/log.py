@@ -9,7 +9,7 @@ def Log(*data: str, code: int):
     divider=f"{color}----------------------------------------------------"
     print(divider)
     print(
-        f"[DATE]: {formatted_datetime}", 
+        f"[Date]: {formatted_datetime}", 
         *data, 
         sep=".\n", 
         end=f".\n{divider}\n", 

@@ -18,4 +18,4 @@ order = {
 }
 
 r = requests.put(f"http://localhost:3000/orders/{order_id}", json=order)
-LogEx(f"[Response Code]: {r.status_code}", code=r.status_code)
+LogEx(f"[Code]: {r.status_code}", code=r.status_code)
