@@ -16,13 +16,8 @@ def Log(*data: str, code: int):
         flush=True
     )
 
-def LogEx(*data: str, exit_code=1):
-    if exit_code >= 1:
-        exit_code = 1
-        code = 500
-    else:
-        exit_code = 0
-        code = 200
+def LogEx(*data: str, code: int):
+    code = 500 if code == 1 else code
     Log(*data, code=code)
-    sys.exit(exit_code)
+    sys.exit(code)
 
