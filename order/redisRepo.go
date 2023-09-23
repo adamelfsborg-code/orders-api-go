@@ -21,11 +21,11 @@ func (r *RedisRepo) Ping(ctx context.Context) error {
 	return r.Client.Ping(ctx).Err()
 }
 
-func (r *RedisRepo) Close(ctx context.Context) error {
+func (r *RedisRepo) Close() error {
 	return r.Client.Close()
 }
 
-func (r *RedisRepo) Create(ctx context.Context, order OrderModel) error {
+func (r *RedisRepo) Create(ctx context.Context, order Order) error {
 	data, err := json.Marshal(order)
 	if err != nil {
 		return fmt.Errorf("Failed to encode order: %w", err)
@@ -55,22 +55,20 @@ func (r *RedisRepo) Create(ctx context.Context, order OrderModel) error {
 	return nil
 }
 
-var ErrNotExists = errors.New("Order does not exist")
-
-func (r *RedisRepo) FindByID(ctx context.Context, id uint64) (OrderModel, error) {
+func (r *RedisRepo) FindByID(ctx context.Context, id uint64) (Order, error) {
 	key := orderIDKey(id)
 
 	value, err := r.Client.Get(ctx, key).Result()
 	if errors.Is(err, redis.Nil) {
-		return OrderModel{}, ErrNotExists
+		return Order{}, ErrNotExists
 	} else if err != nil {
-		return OrderModel{}, fmt.Errorf("get order: %w", err)
+		return Order{}, fmt.Errorf("get order: %w", err)
 	}
 
-	var order OrderModel
+	var order Order
 	err = json.Unmarshal([]byte(value), &order)
 	if err != nil {
-		return OrderModel{}, fmt.Errorf("Failed to decode order json: %w", err)
+		return Order{}, fmt.Errorf("Failed to decode order json: %w", err)
 	}
 
 	return order, nil
@@ -105,7 +103,7 @@ func (r *RedisRepo) DeleteByID(ctx context.Context, id uint64) error {
 	return nil
 }
 
-func (r *RedisRepo) UpdateByID(ctx context.Context, order OrderModel) error {
+func (r *RedisRepo) UpdateByID(ctx context.Context, order Order) error {
 	data, err := json.Marshal(order)
 	if err != nil {
 		return fmt.Errorf("Failed to encode order: %w", err)
@@ -133,7 +131,7 @@ func (r *RedisRepo) List(ctx context.Context, page FindAllPage) (FindResult, err
 
 	if len(keys) == 0 {
 		return FindResult{
-			Orders: []OrderModel{},
+			Orders: []Order{},
 		}, nil
 	}
 
@@ -142,11 +140,11 @@ func (r *RedisRepo) List(ctx context.Context, page FindAllPage) (FindResult, err
 		return FindResult{}, fmt.Errorf("Failed to get orders: %w", err)
 	}
 
-	orders := make([]OrderModel, len(xs))
+	orders := make([]Order, len(xs))
 
 	for i, x := range xs {
 		x := x.(string)
-		var order OrderModel
+		var order Order
 
 		err := json.Unmarshal([]byte(x), &order)
 		if err != nil {

@@ -16,11 +16,11 @@ import (
 
 type Repo interface {
 	Ping(ctx context.Context) error
-	Close(ctx context.Context) error
-	Create(ctx context.Context, order OrderModel) error
+	Close() error
+	Create(ctx context.Context, order Order) error
 	List(ctx context.Context, page FindAllPage) (FindResult, error)
-	FindByID(ctx context.Context, id uint64) (OrderModel, error)
-	UpdateByID(ctx context.Context, order OrderModel) error
+	FindByID(ctx context.Context, id uint64) (Order, error)
+	UpdateByID(ctx context.Context, order Order) error
 	DeleteByID(ctx context.Context, id uint64) error
 }
 
@@ -34,14 +34,16 @@ type FindAllPage struct {
 }
 
 type FindResult struct {
-	Orders []OrderModel
+	Orders []Order
 	Cursor uint64
 }
 
+var ErrNotExists = errors.New("Order does not exist")
+
 func (o *OrderHandler) Create(w http.ResponseWriter, r *http.Request) {
 	var body struct {
-		CustomerID uuid.UUID            `json:"customer_id"`
-		LineItems  []OrderLineItemModel `json:"line_items"`
+		CustomerID uuid.UUID  `json:"customer_id"`
+		LineItems  []LineItem `json:"line_items"`
 	}
 
 	err := json.NewDecoder(r.Body).Decode(&body)
@@ -52,7 +54,7 @@ func (o *OrderHandler) Create(w http.ResponseWriter, r *http.Request) {
 	}
 
 	now := time.Now().UTC()
-	order := OrderModel{
+	order := Order{
 		OrderID:    rand.Uint64(),
 		CustomerID: body.CustomerID,
 		LineItems:  body.LineItems,
@@ -104,8 +106,8 @@ func (o *OrderHandler) List(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var response struct {
-		Items []OrderModel `json:"items"`
-		Next  uint64       `json:"next,omitempty"`
+		Items []Order `json:"items"`
+		Next  uint64  `json:"next,omitempty"`
 	}
 
 	response.Items = res.Orders
