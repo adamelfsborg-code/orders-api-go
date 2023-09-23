@@ -1,7 +1,6 @@
 import requests
 import sys
-from utils.log import Log, LogEx
-from utils.json import format_json
+from utils.log import LogEx
 
 try:
     if len(sys.argv) > 1:

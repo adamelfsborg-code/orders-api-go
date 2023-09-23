@@ -15,7 +15,7 @@ def Log(*data: str, code: int, custom_status_text=None):
         f"[Date]: {formatted_datetime}", 
         *data, 
         sep="\n", 
-        end=f"\n", 
+        end="\n",
         flush=True
     )
     print(colored_divider)
