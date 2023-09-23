@@ -1,5 +1,6 @@
 import requests
 import sys
+from utils.enviroment import SERVER_ADDR
 from utils.log import LogEx
 
 try:
@@ -17,5 +18,5 @@ order = {
     "status": order_status,
 }
 
-r = requests.put(f"http://localhost:3000/orders/{order_id}", json=order)
+r = requests.put(f"{SERVER_ADDR}/orders/{order_id}", json=order)
 LogEx(f"[Code]: {r.status_code}", code=r.status_code)

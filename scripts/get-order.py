@@ -1,5 +1,6 @@
 import requests
 import sys
+from utils.enviroment import SERVER_ADDR
 from utils.log import Log, LogEx
 from utils.json import format_json
 
@@ -17,7 +18,7 @@ except ValueError as err:
     )
 
 if order_id:
-    r = requests.get(f'http://localhost:3000/orders/{order_id}')
+    r = requests.get(f'{SERVER_ADDR}/orders/{order_id}')
     try:
         json = r.json()
         Log(format_json(json), custom_status_text=r.status_code, code=r.status_code)

@@ -2,6 +2,7 @@ import requests
 import uuid
 import random
 import sys
+from utils.enviroment import SERVER_ADDR
 from utils.log import Log, LogEx
 
 orders_to_create=1
@@ -42,5 +43,5 @@ for i in range(orders_to_create):
         "line_items": line_items,
     }
 
-    r = requests.post("http://localhost:3000/orders", json=order)
+    r = requests.post(f"{SERVER_ADDR}/orders", json=order)
     Log("[Response]: Order created", custom_status_text=r.status_code, code=r.status_code)

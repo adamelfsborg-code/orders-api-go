@@ -1,5 +1,6 @@
 import requests
 import sys
+from utils.enviroment import SERVER_ADDR
 from utils.log import LogEx
 
 try:
@@ -15,19 +16,11 @@ except ValueError as err:
     )
 
 if order_id:
-    r = requests
-    try:
-        r = r.delete(f'http://localhost:3000/orders/{order_id}')
-        LogEx(
-            custom_status_text=r.status_code,
-            code=r.status_code
-        )
-    except Exception as err:
-        LogEx(
-            f"[Error]: {err}", 
-            custom_status_text=r.status_code,
-            code=r.status_code
-        )
+    r = requests.delete(f'{SERVER_ADDR}/orders/{order_id}')
+    LogEx(
+        custom_status_text=r.status_code,
+        code=r.status_code
+    )
 else:
     LogEx(
         "[Usage]: python script.py <integer_value: Order Id>", 

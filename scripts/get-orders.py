@@ -1,5 +1,6 @@
 import requests
 import sys
+from utils.enviroment import SERVER_ADDR
 from utils.log import Log, LogEx
 from utils.json import format_json
 
@@ -16,7 +17,7 @@ except ValueError as err:
         code=1
     )
 
-url = f"http://localhost:3000/orders{f'?page={page}' if page else '/'}"
+url = f"{SERVER_ADDR}/orders{f'?page={page}' if page else '/'}"
 r = requests.get(url=url)
 try:
     json = r.json()
