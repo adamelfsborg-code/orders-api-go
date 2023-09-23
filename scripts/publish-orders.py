@@ -2,7 +2,7 @@ import requests
 import uuid
 import random
 import sys
-from utils.log import LogEx
+from utils.log import Log, LogEx
 
 orders_to_create=1
 
@@ -45,4 +45,4 @@ for i in range(orders_to_create):
     # If your port is different, change this URL
     r = requests.post("http://localhost:3000/orders", json=order)
     r.status_code
-    LogEx(f"[Response Code]: {r.status_code}", exit_code=0)
+    Log(f"[Response Code]: {r.status_code}", code=r.status_code)
