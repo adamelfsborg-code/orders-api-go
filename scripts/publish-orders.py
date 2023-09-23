@@ -2,6 +2,7 @@ import requests
 import uuid
 import random
 import sys
+from utils.log import LogEx
 
 orders_to_create=1
 
@@ -10,8 +11,7 @@ try:
         arg = sys.argv[1]
         orders_to_create = int(arg)
 except ValueError as err:
-    print("Usage: python script.py <integer_value>")
-    sys.exit(1)
+    LogEx(f"[ValueError]: {err}", "[Usage]: python script.py <integer_value>", exit_code=1)
 
 item_ids = []
 for i in range(1000):
