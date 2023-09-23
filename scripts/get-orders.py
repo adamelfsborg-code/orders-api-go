@@ -26,8 +26,3 @@ except Exception as err:
         f"[Error]: {err}", 
         code=1
     )
-
-LogEx(
-    f"[Code]: {r.status_code}", 
-    code=r.status_code
-)
